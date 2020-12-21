@@ -1,0 +1,72 @@
+import com.example.buildsrc.*
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        applicationId "com.example.tftcomposition"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion '1.4.21'
+    }
+}
+
+dependencies {
+
+    implementation project(":data:local")
+    implementation project(":data:remote")
+    implementation project(":data:repository")
+    implementation project(":feature:home")
+    implementation project(":feature:builder")
+
+
+    implementation AndroidDependencies.androidXCore
+    implementation AndroidDependencies.appCompat
+    implementation AndroidDependencies.material
+    implementation AndroidDependencies.composeUI
+    implementation AndroidDependencies.composeMaterial
+    implementation AndroidDependencies.composeTooling
+    implementation AndroidDependencies.runtimeLifecycle
+
+    testImplementation TestDependencies.jUnit
+
+    implementation AndroidDependencies.hiltAndroid
+    kapt AndroidDependencies.hiltCompiler
+
+    androidTestImplementation AndroidTestDependencies.jUnitExt
+    androidTestImplementation AndroidTestDependencies.espressoCore
+
+}
