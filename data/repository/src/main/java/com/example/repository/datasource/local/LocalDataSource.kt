@@ -16,6 +16,8 @@ interface LocalDataSource {
 
     suspend fun setComp(comp: CompositionBo): Long
 
+    suspend fun createComp(name: String): Flow<CompositionBo?>
+
     suspend fun deleteComp(comp: CompositionBo)
 
 }

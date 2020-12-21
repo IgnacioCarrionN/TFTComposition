@@ -1,38 +1,55 @@
 package com.example.tftcomposition
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Text
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.tftcomposition.ui.TFTCompositionTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.rememberNavController
+import com.example.builder.ui.BuilderView
+import com.example.builder.viewmodel.BuilderViewModel
+import com.example.home.ui.HomeView
+import com.example.home.viewmodel.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val builderViewModel: BuilderViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            TFTCompositionTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController,
+                startDestination = "home"
+            ) {
+                composable("home") {
+                    HomeView(
+                        navController = navController,
+                        homeViewModel = homeViewModel
+                    )
+                }
+                composable(
+                    route = "builder/?compId={compId}",
+                    arguments = listOf(navArgument("compId") {
+                        nullable = true
+                        defaultValue = null
+                    })
+                ) { backStackEntry ->
+                    BuilderView(
+                        builderViewModel,
+                        backStackEntry.arguments?.getString("compId")?.toLong()
+                    )
                 }
             }
+
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TFTCompositionTheme {
-        Greeting("Android")
     }
 }

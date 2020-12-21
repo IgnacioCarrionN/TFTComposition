@@ -59,12 +59,21 @@ dependencies {
     implementation AndroidDependencies.composeUI
     implementation AndroidDependencies.composeMaterial
     implementation AndroidDependencies.composeTooling
+    implementation AndroidDependencies.composeNavigation
     implementation AndroidDependencies.runtimeLifecycle
 
     testImplementation TestDependencies.jUnit
 
     implementation AndroidDependencies.hiltAndroid
     kapt AndroidDependencies.hiltCompiler
+
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
+
+    // Modules dependencies needed by Hilt
+    implementation AndroidDependencies.retrofit
+
+
 
     androidTestImplementation AndroidTestDependencies.jUnitExt
     androidTestImplementation AndroidTestDependencies.espressoCore

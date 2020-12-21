@@ -5,7 +5,7 @@ object Versions {
     const val appCompat = "1.2.0"
     const val material = "1.2.1"
     const val compose = "1.0.0-alpha09"
-    const val composeNavigation = "1.0.0-alpha01"
+    const val composeNavigation = "1.0.0-alpha04"
     const val jUnit = "4.+"
     const val runtimeLifecycle = "2.3.0-rc01"
     const val jUnitExt = "1.1.2"

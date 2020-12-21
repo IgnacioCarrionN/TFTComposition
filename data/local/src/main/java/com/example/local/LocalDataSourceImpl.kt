@@ -2,6 +2,7 @@ package com.example.local
 
 import com.example.local.dao.ChampionDao
 import com.example.local.dao.CompositionDao
+import com.example.local.models.CompositionDbo
 import com.example.local.models.toBo
 import com.example.local.models.toDbo
 import com.example.repository.datasource.local.LocalDataSource
@@ -69,6 +70,24 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun setComp(comp: CompositionBo): Long {
         return compositionDao.setComp(comp.toDbo(comp.champList.map { it?.championId }))
+    }
+
+    override suspend fun createComp(name: String): Flow<CompositionBo?> {
+        val comp = CompositionDbo(
+            name = name,
+            champion1 = null,
+            champion2 = null,
+            champion3 = null,
+            champion4 = null,
+            champion5 = null,
+            champion6 = null,
+            champion7 = null,
+            champion8 = null,
+            champion9 = null,
+            champion10 = null
+        )
+        val compId = compositionDao.setComp(comp)
+        return getComp(compId)
     }
 
     override suspend fun deleteComp(comp: CompositionBo) {

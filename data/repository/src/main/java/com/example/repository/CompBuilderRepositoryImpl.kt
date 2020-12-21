@@ -42,6 +42,10 @@ class CompBuilderRepositoryImpl @Inject constructor(
         return localDataSource.setComp(comp)
     }
 
+    override suspend fun createComp(name: String): Flow<CompositionBo?> {
+        return localDataSource.createComp(name)
+    }
+
     override suspend fun deleteComp(comp: CompositionBo) {
         localDataSource.deleteComp(comp)
     }
