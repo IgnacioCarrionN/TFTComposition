@@ -2,7 +2,6 @@ package com.example.home.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,23 +15,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.imageFromResource
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import com.example.home.R
 import com.example.home.state.HomeState
 import com.example.home.viewmodel.HomeViewModel
-import com.example.repository.models.CompositionBo
-import androidx.navigation.compose.navigate
 import com.example.repository.models.ChampionBo
+import com.example.repository.models.CompositionBo
 import com.skydoves.landscapist.glide.GlideImage
 
 
@@ -44,12 +41,14 @@ fun HomeView(navController: NavController, homeViewModel: HomeViewModel) {
     homeViewModel.getCompList()
 
 
-    Card(Modifier.fillMaxHeight().fillMaxWidth()) {
+    Card(Modifier.fillMaxHeight().fillMaxWidth(), shape = RectangleShape) {
         ConstraintLayout(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth().background(color = Color.White)
+            modifier = Modifier.fillMaxHeight().fillMaxWidth()
         ) {
             val (card, fab) = createRefs()
-            Card {
+            Card(
+                modifier = Modifier.fillMaxHeight().fillMaxWidth()
+            ) {
                 when (state) {
                     is HomeState.RenderCompList -> RenderCompList((state as HomeState.RenderCompList).data) {
                         handleNavigationToComp(
@@ -77,7 +76,6 @@ fun HomeView(navController: NavController, homeViewModel: HomeViewModel) {
         }
     }
 
-
 }
 
 private fun handleNavigationToComp(navController: NavController, compId: Long) {
@@ -87,10 +85,16 @@ private fun handleNavigationToComp(navController: NavController, compId: Long) {
 @Composable
 fun RenderCompList(compList: List<CompositionBo>, onClick: (Long) -> Unit) {
     Column() {
-        Text(text = stringResource(id = R.string.home_title))
+        Text(
+            text = stringResource(id = R.string.home_title),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 20.dp)
+        )
         LazyColumn {
             items(items = compList, itemContent = { item ->
                 CompRow(comp = item, onClick)
+                Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
             })
         }
     }
@@ -98,10 +102,10 @@ fun RenderCompList(compList: List<CompositionBo>, onClick: (Long) -> Unit) {
 
 @Composable
 fun CompRow(comp: CompositionBo, onClick: (Long) -> Unit) {
-    Row(Modifier.clickable(onClick = { onClick(comp.id) })) {
+    Row(Modifier.clickable(onClick = { onClick(comp.id) }).fillMaxWidth()) {
         Column() {
-            Text(text = comp.name)
-            LazyRow {
+            Text(text = comp.name, modifier = Modifier.padding(bottom = 12.dp, start = 12.dp), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            LazyRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
                 items(comp.champList) {
                     ChampRow(champ = it)
                 }
@@ -113,17 +117,16 @@ fun CompRow(comp: CompositionBo, onClick: (Long) -> Unit) {
 @Composable
 fun ChampRow(champ: ChampionBo?) {
     Row {
-        if (champ != null) {
-            GlideImage(
-                imageModel = champ.iconUrl,
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Card(border = BorderStroke(1.dp, Color.Black)) {
-                Image(imageVector = vectorResource(R.drawable.ic_fab_add))
+        Card(Modifier.size(30.dp), border = BorderStroke(1.dp, Color.Black)) {
+            if (champ != null) {
+                GlideImage(
+                    imageModel = champ.iconUrl,
+                    contentScale = ContentScale.FillWidth
+                )
+            } else {
+                Image(bitmap = imageResource(android.R.drawable.ic_menu_add))
             }
         }
-
     }
 }
 

@@ -1,12 +1,12 @@
 package com.example.builder.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import com.example.builder.state.BuilderState
@@ -32,46 +32,47 @@ fun BuilderView(builderViewModel: BuilderViewModel, compId: Long?) {
 
     builderViewModel.initContent(compId)
 
-    ConstraintLayout(Modifier.fillMaxWidth().fillMaxHeight()) {
+    Card(shape = RectangleShape) {
+        ConstraintLayout(Modifier.fillMaxWidth().fillMaxHeight()) {
 
-        Column() {
-            Text(text = "Builder")
-            when (state) {
-                is BuilderState.RenderNewComp -> {
-                    Text(text = "Insert new comp name")
-                    var inputText by savedInstanceState { "" }
-                    TextField(value = inputText, onValueChange = { inputText = it })
+            Column {
+                Text(text = "Builder")
+                when (state) {
+                    is BuilderState.RenderNewComp -> {
+                        Text(text = "Insert new comp name")
+                        var inputText by savedInstanceState { "" }
+                        TextField(value = inputText, onValueChange = { inputText = it })
 
-                    Button(onClick = {
-                        builderViewModel.setCompName(inputText)
-                    },
-                        content = {
-                            Text(text = "OK")
-                        })
-                }
-                is BuilderState.RenderBuilder -> {
-                    val stateRender = state as BuilderState.RenderBuilder
-                    Text(text = stateRender.comp.name)
-                    RenderComp(stateRender.comp) { position ->
-                        builderViewModel.selectChamp(position)
+                        Button(onClick = {
+                            builderViewModel.setCompName(inputText)
+                        },
+                            content = {
+                                Text(text = "OK")
+                            })
                     }
-                }
-                is BuilderState.RenderBuilderWithChamps -> {
-                    val stateRender = state as BuilderState.RenderBuilderWithChamps
-                    Text(text = stateRender.comp.name)
-                    RenderComp(stateRender.comp) { position ->
-                        builderViewModel.selectChamp(position)
+                    is BuilderState.RenderBuilder -> {
+                        val stateRender = state as BuilderState.RenderBuilder
+                        Text(text = stateRender.comp.name)
+                        RenderComp(stateRender.comp) { position ->
+                            builderViewModel.selectChamp(position)
+                        }
                     }
-                    RenderChamps(stateRender.champList) { champ ->
-                        builderViewModel.addChamp(champ, stateRender.position)
+                    is BuilderState.RenderBuilderWithChamps -> {
+                        val stateRender = state as BuilderState.RenderBuilderWithChamps
+                        Text(text = stateRender.comp.name)
+                        RenderComp(stateRender.comp) { position ->
+                            builderViewModel.selectChamp(position)
+                        }
+                        RenderChamps(stateRender.champList) { champ ->
+                            builderViewModel.addChamp(champ, stateRender.position)
+                        }
                     }
                 }
             }
+
+
         }
-
-
     }
-
 }
 
 
@@ -81,7 +82,7 @@ fun RenderChamps(champList: List<ChampionBo>, cells: Int = 5, onClick: (Champion
 
     LazyColumn() {
         items(chunkedList) { champRow ->
-            LazyRow(Modifier.background(Color.Red), horizontalArrangement = Arrangement.SpaceAround) {
+            LazyRow(horizontalArrangement = Arrangement.SpaceAround) {
                 items(champRow) { champ ->
                     ChampRow(champ = champ, onClick = { onClick(champ) })
                 }
